@@ -1,0 +1,16 @@
+numpy
+matplotlib
+pandas
+geopandas
+rasterio
+xarray
+rioxarray
+xarray-spatial
+dask
+tqdm
+pystac
+pystac-client
+stackstac
+osmnx
+networkx
+fastdl
