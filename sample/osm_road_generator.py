@@ -7,7 +7,7 @@ import rasterio
 from tqdm import tqdm
 import geopandas as gpd
 
-from osm_road_data import OSMRoadData
+from sample.osm_road_data import OSMRoadData
 from sample.utils import get_simple_logger
 
 

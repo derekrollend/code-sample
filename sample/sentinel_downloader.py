@@ -7,7 +7,7 @@ import os
 import xrspatial.multispectral as ms
 import xarray as xr
 
-from stackstac_downloader import StackStacDownloader
+from sample.stackstac_downloader import StackStacDownloader
 
 
 class Season(Enum):

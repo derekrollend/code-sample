@@ -5,7 +5,7 @@ from tqdm import tqdm
 import geopandas as gpd
 import rioxarray
 
-from sentinel_downloader import SentinelDownloader, Season
+from sample.sentinel_downloader import SentinelDownloader, Season
 
 
 class SentinelCitiesDownloader(SentinelDownloader):
