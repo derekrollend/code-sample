@@ -12,7 +12,7 @@ from sample.osm_road_generator import OSMRoadGenerator
 
 
 def main():
-    cities_geojson = Path("data/city_ids_and_bounds.geojson")
+    cities_geojson = Path("data/small_city_ids_and_bounds.geojson")
     if not cities_geojson.exists():
         raise FileNotFoundError(cities_geojson)
 
@@ -20,8 +20,9 @@ def main():
 
     # Download S2 mosaic for each city
     s2_cities_downloader = SentinelCitiesDownloader(
+        cities_geojson_path=cities_geojson,
         years=[2021],
-        seasons=[Season.Summer],
+        seasons=[Season.Spring, Season.Summer, Season.Fall],
         use_cache=False,
         verbose=True,
         force_new_download=True,
@@ -29,7 +30,7 @@ def main():
     s2_cities_downloader.download_all(parallel=False, debug=False)
 
     # Generate OpenStreetMap rasters for each city, save each as separate GeoTIFF
-    osm_road_generator = OSMRoadGenerator()
+    osm_road_generator = OSMRoadGenerator(cities_geojson_path=cities_geojson)
     osm_road_generator.generate_roads_parallel()
 
     # visualize

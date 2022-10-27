@@ -16,6 +16,7 @@ class StackStacDownloader:
     mosaicing operations significantly and should be used when repeated queries with the same
     spatiotemporal bounds are not used, and when saving a local copy is not important.
     """
+
     def __init__(
         self,
         archive_path,
@@ -94,7 +95,7 @@ class StackStacDownloader:
             if s2_search.matched() > 0:
                 items = [
                     item.to_dict()
-                    for item in s2_search.get_items()
+                    for item in s2_search.items()
                     if item.properties["eo:cloud_cover"] < max_cloudcover
                 ]
 
@@ -185,7 +186,7 @@ class StackStacDownloader:
 
 def main():
     archive_path = Path("data/s2_archive")
-    downloader = StackStacDownloader(archive_path)
+    downloader = StackStacDownloader(archive_path, use_cache=False)
     daterange = "2017-07-01/2017-10-30"
     bounds = [
         -148.56536865234375,
