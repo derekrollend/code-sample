@@ -13,4 +13,4 @@ pystac-client
 stackstac
 osmnx
 networkx
-fastdl
+
