@@ -6,7 +6,6 @@ from sample.stackstac_downloader import StackStacDownloader
 
 
 def test_stack_and_mosaic():
-    archive_path = Path("data/s2_archive")
     downloader = StackStacDownloader()
     daterange = "2017-07-01/2017-10-30"
     bounds = [
