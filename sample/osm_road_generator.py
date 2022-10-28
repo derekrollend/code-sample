@@ -1,7 +1,6 @@
 from multiprocessing import Pool
 from pathlib import Path
 import os
-import argparse
 
 import rasterio
 from tqdm import tqdm
@@ -12,6 +11,12 @@ from sample.utils import get_simple_logger
 
 
 class OSMRoadGenerator:
+    """
+    Class to generate a set of OpenStreetMap raster images, given a set of cities and
+    previously-generated Sentinel-2 images. Generation can be run in either serial or
+    parallel.
+    """
+
     def __init__(
         self,
         cities_geojson_path: Path = Path("data/city_ids_and_bounds.geojson"),
@@ -91,7 +96,7 @@ class OSMRoadGenerator:
                     desc="Processing images",
                 )
             )
-        print(f"Images with errors: {[p for p in r if p is not None]}")
+        self.logger.info(f"Images with errors: {[p for p in r if p is not None]}")
 
     def generate_roads(self):
         r = []
@@ -99,24 +104,4 @@ class OSMRoadGenerator:
             self.cities_gdf["asset_identifier"], desc="Processing images"
         ):
             r.append(self._generate_roads_helper(city_path))
-        print(f"Images with errors: {[p for p in r if p is not None]}")
-
-
-def main(args):
-    road_generator = OSMRoadGenerator()
-
-    generate_fn = (
-        road_generator.generate_roads_parallel
-        if args.parallel
-        else road_generator.generate_roads
-    )
-    generate_fn()
-
-
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "--parallel", action="store_true", help="Run road generation in parallel."
-    )
-    args = parser.parse_args()
-    main(args)
+        self.logger.info(f"Images with errors: {[p for p in r if p is not None]}")

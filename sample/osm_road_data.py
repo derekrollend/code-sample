@@ -90,6 +90,8 @@ class OSMRoadData:
         dtype=rasterio.uint8,
     ) -> np.ndarray:
         """
+        Rasterize a set of geometries into a single image.
+
         NOTE: shapes (iterable of (geometry, value) pairs or geometries)
         See https://rasterio.readthedocs.io/en/latest/api/rasterio.features.html#rasterio.features.rasterize
         """
@@ -109,6 +111,17 @@ class OSMRoadData:
     def road_image_from_bounding_rasterio_dataset(
         self, input_ds: rasterio.DatasetReader
     ) -> np.ndarray:
+        """
+        Creates a road raster image corresponding to the geographic extent of
+        the input rasterio DatasetReader. Roads within the bounding box of the
+        input dataset are retrieved from the previously loaded OSM graph edges (roads)
+        GeoDataFrame and rasterized with rasterio.
+
+        The output is a 3 channel numpy array, where the first channel contains the
+        locations of primary roads, second channel is secondary roads, and third channel
+        is local roads. Binary road (no road) values are scaled to 255 (0) for downstream
+        visualization and input to ML models.
+        """
         warped_input_ds = rasterio.vrt.WarpedVRT(
             input_ds, crs=self.osm_graph_edges_gdf.crs
         )
@@ -144,7 +157,7 @@ class OSMRoadData:
             warped_input_ds.width,
         )
 
-        # reproject to the src datasets crs
+        # reproject to the src dataset's crs
         output_roads_img = np.zeros(
             (3, input_ds.height, input_ds.width), dtype=warped_roads_img.dtype
         )

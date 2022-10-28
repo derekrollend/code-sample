@@ -14,13 +14,15 @@ from sample.utils import get_simple_logger
 
 def main():
     logger = get_simple_logger("main")
+
+    # Load city IDs, names, and geographic bounds
     cities_geojson = Path("data/city_ids_and_bounds.geojson")
     if not cities_geojson.exists():
         raise FileNotFoundError(cities_geojson)
 
     cities_gdf = gpd.read_file(cities_geojson)
 
-    # Download Sentinel-2 mosaic for each city
+    # Download Sentinel-2 mosaic for each city for a few seasons in 2021
     s2_cities_downloader = SentinelCitiesDownloader(
         cities_geojson_path=cities_geojson,
         years=[2021],

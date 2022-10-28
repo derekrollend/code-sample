@@ -38,7 +38,7 @@ class StackStacDownloader:
         assets=["B04", "B03", "B02"],
         epsg=4326,
     ):
-        # Bounds should be standardized (-180,180), (-90, 90)
+        # Bounds should be standardized to (-180,180), (-90, 90)
         bounds = self.standardize_bounds(bounds)
 
         if self.api == None:
