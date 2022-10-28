@@ -131,4 +131,5 @@ dmypy.json
 data/osm_images
 data/sentinel2_images
 data/s2_archive
-# data/osm_networks
+
+*.png
