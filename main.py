@@ -39,6 +39,8 @@ def main():
     plot_output_path.mkdir(exist_ok=True)
 
     for city_tuple in cities_gdf.itertuples():
+        logger.info(f"Creating plot for {city_tuple.asset_name}...")
+        
         city_tif_paths = sorted(
             Path(f"data/sentinel2_images/{city_tuple.asset_identifier}").rglob("*.tif")
         )
@@ -62,7 +64,10 @@ def main():
             axes[1].get_xaxis().set_visible(False)
             plt.suptitle(city_tuple.asset_name)
             plt.tight_layout()
-            fig.savefig(plot_output_path / f"{city_tuple.asset_name}.png")
+            
+            city_plot_output_path = plot_output_path / f"{city_tuple.asset_name}.png"
+            fig.savefig(city_plot_output_path)
+            logger.info(f"Saved plot to {city_plot_output_path}")
 
 
 if __name__ == "__main__":
