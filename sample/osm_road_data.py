@@ -160,31 +160,3 @@ class OSMRoadData:
         assert output_roads_img.dtype == np.uint8
 
         return output_roads_img
-
-
-def main():
-    test_cities = {13: "hartford", 3: "houston"}
-    test_city_id = 3
-    cities_osm_folder = Path("data/osm_networks")
-    test_city_graphml_file = cities_osm_folder / f"{test_city_id}.graphml.gz"
-    assert test_city_graphml_file.exists()
-    test_city_root_img_path = Path(f"data/sentinel2_images/{test_city_id}")
-    test_city_tif_path = (
-        test_city_root_img_path / f"{test_cities[test_city_id]}_visual.tif"
-    )
-
-    test_city_visual_ds = rasterio.open(test_city_tif_path)
-
-    osm_road_data = OSMRoadData(test_city_graphml_file)
-
-    roads_img = osm_road_data.road_image_from_bounding_rasterio_dataset(
-        test_city_visual_ds
-    )
-    road_id_img = osm_road_data.road_id_map_from_bounding_rasterio_dataset(
-        test_city_visual_ds
-    )
-    assert roads_img.shape == road_id_img.shape
-
-
-if __name__ == "__main__":
-    main()
