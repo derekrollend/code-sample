@@ -22,3 +22,4 @@ The entry point is `main.py`, which will load city data from `data/city_ids_and_
 ## Notes
 * Sentinel-2 mosaic creation can take a couple minutes, depending on internet speeds and host machine compute power and available memory.
 * The code relies on previously-extracted OSM road network data, saved in `data/osm_networks` as `.graphml.gz` files. These files have been previously extracted from a larger OSM binary file using [Osmium](https://osmcode.org/osmium-tool/), but could also be retrieved using the [OSMnx](https://osmnx.readthedocs.io/en/stable/) Python package.
+* This combination of Sentinel-2 RGB imagery and OSM road network data have previously been used to train machine learning models to predict road transportation-related variables (e.g., emissions, vehicle traffic).
