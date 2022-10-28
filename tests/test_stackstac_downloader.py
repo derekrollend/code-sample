@@ -7,7 +7,7 @@ from sample.stackstac_downloader import StackStacDownloader
 
 def test_stack_and_mosaic():
     archive_path = Path("data/s2_archive")
-    downloader = StackStacDownloader(archive_path, use_cache=False)
+    downloader = StackStacDownloader()
     daterange = "2017-07-01/2017-10-30"
     bounds = [
         -148.56536865234375,
@@ -15,7 +15,7 @@ def test_stack_and_mosaic():
         -147.44338989257812,
         61.18363894915102,
     ]
-    mosaic = downloader.stack_and_mosaic(daterange, bounds, force_new_download=False)
+    mosaic = downloader.stack_and_mosaic(daterange, bounds)
     assert isinstance(mosaic, xarray.core.dataarray.DataArray)
     assert mosaic.shape[0] == 3
     assert mosaic.dims == ("band", "y", "x")

@@ -6,7 +6,7 @@ from sample.osm_road_data import OSMRoadData
 
 
 def test_road_image_from_road_image_from_bounding_rasterio_dataset():
-    test_city_id = 10
+    test_city_id = 13  # Hartford, CT - smallest city in the dataset
     cities_osm_folder = Path("data/osm_networks")
     test_city_graphml_file = cities_osm_folder / f"{test_city_id}.graphml.gz"
     assert test_city_graphml_file.exists()

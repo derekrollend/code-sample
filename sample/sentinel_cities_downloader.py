@@ -50,7 +50,7 @@ class SentinelCitiesDownloader(SentinelDownloader):
                     output_mosaic_path.exists()
                     and output_mosaic_path.stat().st_size > 0
                 ):
-                    print(f"Skipping existing mosaic {output_mosaic_path}")
+                    self.logger.info(f"Skipping existing mosaic {output_mosaic_path}")
                     continue
 
                 end_year = year if season != Season.Winter else year + 1
@@ -64,9 +64,11 @@ class SentinelCitiesDownloader(SentinelDownloader):
                     if rgb_mosaic is not None:
                         rgb_mosaic.rio.to_raster(output_mosaic_path)
                     else:
-                        print(f"Failed to retrieve RGB mosaic for {season} - {year}")
+                        self.logger.error(
+                            f"Failed to retrieve RGB mosaic for {season} - {year}"
+                        )
                 except Exception as e:
-                    print(f"Caught exception: {e}")
+                    self.logger.exception(f"Caught exception: {e}")
 
     def download_all(self, parallel=False, debug=False):
         """
@@ -78,7 +80,6 @@ class SentinelCitiesDownloader(SentinelDownloader):
         )
 
         if parallel:
-            # TODO: sometimes this freezes when downloading images...
             with Pool(self.pool_size) as p:
                 r = list(
                     tqdm(
@@ -97,9 +98,6 @@ def main():
     downloader = SentinelCitiesDownloader(
         years=[2021],
         seasons=[Season.Summer],
-        use_cache=False,
-        verbose=True,
-        force_new_download=False,
     )
     downloader.download_all(parallel=True, debug=False)
 

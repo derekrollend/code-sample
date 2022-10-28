@@ -1,5 +1,3 @@
-from enum import Enum
-from pathlib import Path
 from typing import Iterable
 from enum import Enum, auto
 import os
@@ -8,6 +6,7 @@ import xrspatial.multispectral as ms
 import xarray as xr
 
 from sample.stackstac_downloader import StackStacDownloader
+from sample.utils import get_simple_logger
 
 
 class Season(Enum):
@@ -28,26 +27,15 @@ class SentinelDownloader:
 
     def __init__(
         self,
-        max_cloudcover: int = 15,
+        max_cloudcover: int = 10,
         years: Iterable[int] = range(2017, 2022),
         seasons: Iterable[Season] = list(Season),
         pool_size: int = os.cpu_count() // 2,
-        use_cache: bool = True,
-        archive_path: Path = Path("data/s2_archive"),
-        stac_catalog_url: str = "https://earth-search.aws.element84.com/v0",
-        force_new_download: bool = False,
-        verbose: bool = False,
     ):
+        self.logger = get_simple_logger(self.__class__.__name__)
         self.max_cloudcover = max_cloudcover
         self.pool_size = pool_size
-        self.force_new_download = force_new_download
-        self.verbose = verbose
-        self.archive_path = archive_path
-        if not self.archive_path.exists():
-            self.archive_path.mkdir(exist_ok=True)
-        self.downloader = StackStacDownloader(
-            self.archive_path, use_cache=use_cache, stac_catalog_url=stac_catalog_url
-        )
+        self.downloader = StackStacDownloader()
         self.years = years
         self.seasons = seasons
         self.season_dates = {
@@ -62,14 +50,16 @@ class SentinelDownloader:
         bounds: Iterable[float],
         daterange: str,
     ) -> xr.DataArray:
+        """
+        Retrieves an Sentinel-2 RGB mosaic from STAC. The xarray-spatial `true_color` function
+        is used to scale the native uint16 reflectance values to the range 0-255 as uint8.
+        """
         rgb_mosaic = None
         try:
             mosaic = self.downloader.stack_and_mosaic(
                 daterange=daterange,
                 bounds=bounds,
-                verbose=self.verbose,
                 max_cloudcover=self.max_cloudcover,
-                force_new_download=self.force_new_download,
             )
             rgb_mosaic = (
                 ms.true_color(*mosaic, nodata=0)
@@ -78,6 +68,8 @@ class SentinelDownloader:
             )
             rgb_mosaic.attrs = mosaic.attrs.copy()
         except Exception as e:
-            print(f"Failed to create mosaic for {bounds} ({daterange}): {e}")
+            self.logger.error(
+                f"Failed to create mosaic for {bounds} ({daterange}): {e}"
+            )
 
         return rgb_mosaic
