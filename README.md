@@ -12,7 +12,7 @@ A cities GeoJSON is provided in `data/city_ids_and_bounds.geojson`, and currentl
 OpenStreetMap roads are categorized into three types of roads: primary (e.g., highways), secondary (e.g., arterial or collector roads), and local (e.g., residential roads). Each road type is rasterized in a separate image, and the resulting images are channel concatenated into a single, three-channel image. Thus, in the resulting plots, primary roads are represented as red, secondary as green, and local as blue.
 
 ## Environment Setup
-1. Install Poetry if you haven't already: https://python-poetry.org/docs/#installation
+1. [Install Poetry](https://python-poetry.org/docs/#installation) if you haven't already
 2. Run `poetry install` to create a virtual environment and install dependencies
 3. Use `poetry run` to invoke commands for the virtual environment
 
