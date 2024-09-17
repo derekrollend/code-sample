@@ -3,7 +3,7 @@ from multiprocessing import Pool
 
 from tqdm import tqdm
 import geopandas as gpd
-import rioxarray
+import rioxarray  # noqa: F401
 
 from sample.sentinel_downloader import SentinelDownloader, Season
 
@@ -33,9 +33,7 @@ class SentinelCitiesDownloader(SentinelDownloader):
 
     def _download_helper(self, info):
         asset_identifier, asset_geom = info
-        download_seasons = {
-            k: v for k, v in self.season_dates.items() if k in self.seasons
-        }
+        download_seasons = {k: v for k, v in self.season_dates.items() if k in self.seasons}
 
         for year in tqdm(self.years, desc=f"{asset_identifier} - years"):
             # Store images by year
@@ -46,10 +44,7 @@ class SentinelCitiesDownloader(SentinelDownloader):
                 download_seasons.items(), desc=f"{asset_identifier} - seasons"
             ):
                 output_mosaic_path = curr_output_folder / f"{season}.tif"
-                if (
-                    output_mosaic_path.exists()
-                    and output_mosaic_path.stat().st_size > 0
-                ):
+                if output_mosaic_path.exists() and output_mosaic_path.stat().st_size > 0:
                     self.logger.info(f"Skipping existing mosaic {output_mosaic_path}")
                     continue
 
@@ -57,16 +52,12 @@ class SentinelCitiesDownloader(SentinelDownloader):
                 daterange = f"{year}-{start_mm_dd}/{end_year}-{end_mm_dd}"
 
                 try:
-                    rgb_mosaic = self._get_rgb_mosaic_for_bounds(
-                        asset_geom.bounds, daterange
-                    )
+                    rgb_mosaic = self._get_rgb_mosaic_for_bounds(asset_geom.bounds, daterange)
 
                     if rgb_mosaic is not None:
                         rgb_mosaic.rio.to_raster(output_mosaic_path)
                     else:
-                        self.logger.error(
-                            f"Failed to retrieve RGB mosaic for {season} - {year}"
-                        )
+                        self.logger.error(f"Failed to retrieve RGB mosaic for {season} - {year}")
                 except Exception as e:
                     self.logger.exception(f"Caught exception: {e}")
 
@@ -75,13 +66,11 @@ class SentinelCitiesDownloader(SentinelDownloader):
         Download Sentinel-2 Level-2A products from AWS STAC Catalog, using StackStacDownloader
         """
 
-        location_list = list(
-            zip(self.cities_gdf["asset_identifier"], self.cities_gdf["geometry"])
-        )
+        location_list = list(zip(self.cities_gdf["asset_identifier"], self.cities_gdf["geometry"]))
 
         if parallel:
             with Pool(self.pool_size) as p:
-                r = list(
+                _ = list(
                     tqdm(
                         p.imap_unordered(self._download_helper, location_list),
                         total=len(location_list),
