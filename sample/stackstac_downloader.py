@@ -1,8 +1,6 @@
 import pystac_client
 import stackstac
 import numpy as np
-import geopandas as gpd
-import shapely.geometry
 
 
 class StackStacDownloader:
@@ -17,7 +15,7 @@ class StackStacDownloader:
 
     def __init__(
         self,
-        stac_catalog_url="https://earth-search.aws.element84.com/v0",
+        stac_catalog_url="https://earth-search.aws.element84.com/v1",
     ):
         self.stac_catalog_url = stac_catalog_url
         self.api = None
@@ -35,69 +33,30 @@ class StackStacDownloader:
         daterange,
         bounds,
         max_cloudcover=10,
-        assets=["B04", "B03", "B02"],
+        assets=["red", "green", "blue"],
         epsg=4326,
     ):
         # Bounds should be standardized to (-180,180), (-90, 90)
         bounds = self.standardize_bounds(bounds)
 
-        if self.api == None:
+        if self.api is None:
             self.api = pystac_client.Client.open(self.stac_catalog_url)
 
         s2_search = self.api.search(
             datetime=daterange,
             bbox=bounds,
-            limit=500,
-            collections="sentinel-s2-l2a-cogs",
+            limit=100,
+            collections=["sentinel-2-l2a"],
+            query=[f"eo:cloud_cover<={max_cloudcover}"],
+            sortby=["+properties.eo:cloud_cover"],
         )
 
-        if s2_search.matched() > 0:
-            items = [
-                item.to_dict()
-                for item in s2_search.items()
-                if item.properties["eo:cloud_cover"] < max_cloudcover
-            ]
+        if s2_search.matched() == 0:
+            raise RuntimeError("Failed to find any images for specified date range and geographic bounds.")
 
-            if len(items) > 0:
-                # Sort items by cloud cover
-                items_df = gpd.GeoDataFrame(items)
-                items_df["geometry"] = items_df["geometry"].apply(
-                    shapely.geometry.shape
-                )
-                items_df["cloud_cover"] = items_df["properties"].apply(
-                    lambda x: x["eo:cloud_cover"]
-                )
-                items_df = items_df.sort_values("cloud_cover")
+        items = s2_search.item_collection()
 
-                # Filter out items that cover the same geographic region but with higher cloud cover values
-                bounds_shp = shapely.geometry.box(*bounds)
-                mosaic_shp = shapely.geometry.shape(
-                    {"type": "Polygon", "coordinates": []}
-                )
-                optimal_ids = []
-                for _, item in items_df.iterrows():
-                    overlapping_item_geom = item["geometry"].intersection(bounds_shp)
-                    if not mosaic_shp.contains(overlapping_item_geom):
-                        optimal_ids.append(item["id"])
-                        mosaic_shp = mosaic_shp.union(item["geometry"])
-
-                    if mosaic_shp.contains(bounds_shp):
-                        break
-
-                # Filter items according to the optimal set with minimal cloud cover
-                items = [item for item in items if item["id"] in optimal_ids]
-            else:
-                raise RuntimeError(
-                    f"Failed to find any images with eo:cloud_cover <= {max_cloudcover}."
-                )
-        else:
-            raise RuntimeError(
-                f"Failed to find any images for specified date range and geographic bounds."
-            )
-
-        rgb_stack = stackstac.stack(
-            items, assets=assets, epsg=epsg, bounds_latlon=bounds, sortby_date=False
-        ).where(
+        rgb_stack = stackstac.stack(items, assets=assets, epsg=epsg, bounds_latlon=bounds, sortby_date=False).where(
             lambda x: x > 0, other=np.nan
         )  # sentinel-2 uses 0 as nodata
 
