@@ -871,6 +871,17 @@ files = [
 all = ["flake8 (>=7.1.1)", "mypy (>=1.11.2)", "pytest (>=8.3.2)", "ruff (>=0.6.2)"]
 
 [[package]]
+name = "iniconfig"
+version = "2.0.0"
+description = "brain-dead simple config-ini parsing"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "iniconfig-2.0.0-py3-none-any.whl", hash = "sha256:b6a85871a79d2e3b22d2d1b94ac2824226a63c6b741c88f7ae975f18b6778374"},
+    {file = "iniconfig-2.0.0.tar.gz", hash = "sha256:2d91e135bf72d31a410b17c16da610a82cb55f6b0477d1a902134b24a455b8b3"},
+]
+
+[[package]]
 name = "ipykernel"
 version = "6.29.5"
 description = "IPython Kernel for Jupyter"
@@ -1815,6 +1826,21 @@ test = ["appdirs (==1.4.4)", "covdefaults (>=2.3)", "pytest (>=8.3.2)", "pytest-
 type = ["mypy (>=1.11.2)"]
 
 [[package]]
+name = "pluggy"
+version = "1.5.0"
+description = "plugin and hook calling mechanisms for python"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "pluggy-1.5.0-py3-none-any.whl", hash = "sha256:44e1ad92c8ca002de6377e165f3e0f1be63266ab4d554740532335b9d75ea669"},
+    {file = "pluggy-1.5.0.tar.gz", hash = "sha256:2cffa88e94fdc978c4c574f15f9e59b7f4201d439195c3715ca9e2486f1d0cf1"},
+]
+
+[package.extras]
+dev = ["pre-commit", "tox"]
+testing = ["pytest", "pytest-benchmark"]
+
+[[package]]
 name = "pre-commit"
 version = "3.8.0"
 description = "A framework for managing and maintaining multi-language pre-commit hooks."
@@ -2092,6 +2118,26 @@ requests = ">=2.28.2"
 [package.extras]
 dev = ["black (>=24.0,<25.0)", "codespell (>=2.3.0,<2.4.0)", "coverage (>=7.2,<8.0)", "doc8 (>=1.1.1,<1.2.0)", "importlib-metadata (>=8.0,<9.0)", "mypy (>=1.2,<2.0)", "orjson (>=3.8,<4.0)", "pre-commit (>=3.2,<4.0)", "pytest (>=8.0,<9.0)", "pytest-benchmark (>=4.0.0,<4.1.0)", "pytest-console-scripts (>=1.4.0,<1.5.0)", "pytest-cov (>=5.0,<6.0)", "pytest-recording (>=0.13,<1.0)", "recommonmark (>=0.7.1,<0.8.0)", "requests-mock (>=1.12,<2.0)", "ruff (==0.5.4)", "tomli (>=2.0,<3.0)", "types-python-dateutil (>=2.8.19,<2.10.0)", "types-requests (>=2.31.0,<2.32.0)", "urllib3 (<2)"]
 docs = ["Sphinx (>=7.3,<8.0)", "boto3 (>=1.26,<2.0)", "cartopy (>=0.21,<1.0)", "geojson (>=3.1.0,<3.2.0)", "geopandas (>=1.0.0,<1.1.0)", "geoviews (>=1.9,<2.0)", "hvplot (>=0.10.0,<0.11.0)", "ipykernel (>=6.22,<7.0)", "ipython (>=8.12,<9.0)", "jinja2 (<4.0)", "matplotlib (>=3.8,<4.0)", "myst-parser (>=3.0,<4.0)", "nbsphinx (>=0.9,<1.0)", "pydata-sphinx-theme (>=0.13,<1.0)", "pygeoif (>=1.0,<2.0)", "scipy (>=1.10,<2.0)", "sphinxcontrib-fulltoc (>=1.2,<2.0)"]
+
+[[package]]
+name = "pytest"
+version = "8.3.3"
+description = "pytest: simple powerful testing with Python"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "pytest-8.3.3-py3-none-any.whl", hash = "sha256:a6853c7375b2663155079443d2e45de913a911a11d669df02a50814944db57b2"},
+    {file = "pytest-8.3.3.tar.gz", hash = "sha256:70b98107bd648308a7952b06e6ca9a50bc660be218d53c257cc1fc94fda10181"},
+]
+
+[package.dependencies]
+colorama = {version = "*", markers = "sys_platform == \"win32\""}
+iniconfig = "*"
+packaging = "*"
+pluggy = ">=1.5,<2"
+
+[package.extras]
+dev = ["argcomplete", "attrs (>=19.2)", "hypothesis (>=3.56)", "mock", "pygments (>=2.7.2)", "requests", "setuptools", "xmlschema"]
 
 [[package]]
 name = "python-dateutil"
@@ -3013,4 +3059,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "~3.12"
-content-hash = "ff1c7fae81be6947c118f27e3c4abc79abe5e5af00ac3335fcd26f239a50076f"
+content-hash = "6929632eaf9482c67c8a4628b60616e49551155857f969dec629b1de9a6624f9"
