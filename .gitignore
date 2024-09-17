@@ -133,3 +133,6 @@ data/sentinel2_images
 data/s2_archive
 
 *.png
+notebooks/
+
+.DS_Store

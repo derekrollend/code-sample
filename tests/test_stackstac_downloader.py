@@ -1,5 +1,3 @@
-from pathlib import Path
-
 import xarray
 
 from sample.stackstac_downloader import StackStacDownloader
